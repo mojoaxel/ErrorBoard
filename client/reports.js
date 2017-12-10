@@ -42,7 +42,7 @@ module.exports = {
             deferred.resolve(_reports[type][key]);
         } else {
             request
-                .get('/reports/' + type)
+                .get('../reports/' + type)
                 .query(key)
                 .set('Accept', 'application/json')
                 .end(function(res) {

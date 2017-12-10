@@ -10,6 +10,7 @@ var serveStaticFile = require('./middleware-static-file');
 var redirectTo = require('./redirect-to');
 
 var app = express();
+var router = express.Router();
 var server = http.createServer(app);
 
 var publicPath = path.join(__dirname, '..', 'client/public');
@@ -19,16 +20,18 @@ app.set('views', __dirname);
 
 app.use(favicon(path.join(publicPath, 'favicon.ico')));
 app.use(compression());
-app.use('/static', express.static(publicPath));
-app.get('/reports/:type', require('./route-reports'));
-app.get('/error', require('./module-logger'));
+router.use('/static', express.static(publicPath));
+router.get('/reports/:type', require('./route-reports'));
+router.get('/error', require('./module-logger'));
 
 // TODO: Remove.
-app.get('/fake', serveStaticFile(path.join(publicPath, 'fake.html')));
+router.get('/fake', serveStaticFile(path.join(publicPath, 'fake.html')));
 
-app.get('/:type/:id?', require('./route-index'));
-app.get('/', redirectTo('/messages/'));
+router.get('/:type/:id?', require('./route-index'));
+router.get('/', redirectTo('./messages/'));
 
-ws.installHandlers(server, {prefix: '/ws'});
+app.use('/', router);
+
+ws.installHandlers(server, {prefix: '.*/ws'});
 
 module.exports = server;

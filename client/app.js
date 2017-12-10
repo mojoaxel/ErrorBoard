@@ -31,6 +31,7 @@ try {
     var ws = new SockJS('/ws');
 
     ws.onmessage = function(e) {
+				console.log(e);
         Reports.update(JSON.parse(e.data));
         updateApp();
     };
